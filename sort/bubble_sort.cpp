@@ -4,6 +4,7 @@
 
 using namespace std;
 
+/*bubbleSort*/
 int bubbleSort(int *arr, int arr_size)
 {
 	if (arr == NULL && arr_size < 1){
