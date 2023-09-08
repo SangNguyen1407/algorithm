@@ -6,6 +6,7 @@
 
 using namespace std;
 
+/*selectSort*/
 int selectSort (int *arr, int arr_size)
 {
 	int numberPos = 0;
