@@ -6,7 +6,6 @@
 
 using namespace std;
 
-/*selectSort*/
 int selectSort (int *arr, int arr_size)
 {
 	int numberPos = 0;
@@ -23,6 +22,8 @@ int selectSort (int *arr, int arr_size)
 	for(int i = 0; i < arr_size - 1; i++)
 	{
 		numberPos = i;
+
+		/* check arr[numberPos] with all number in arr */
 		for (int j = i+1; j < arr_size; j ++)
 		{
 			if (arr[numberPos] > arr[j])
@@ -30,6 +31,7 @@ int selectSort (int *arr, int arr_size)
 				numberPos = j;
 			}
 		}
+		/*convert a big number position to header */
 		if (numberPos != i)
 		{
 			int temp = 0;
