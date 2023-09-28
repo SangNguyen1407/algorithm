@@ -3,41 +3,59 @@
 
 using namespace std;
 
-void RBtree::insertRP(int data){
+RBnode* RBtree::insertRP( RBnode* tree, int data){
     RBnode node(data);
-    RBnode *tree;
 
-    if (root == NULL){
-        root = &node;
-        return;
+    if (tree == NULL){
+        tree = &node;
+        return tree;
     }
 
-    tree = root;
+    if (tree->data < data){
+        insertRP(tree->left_child, data);
+    }
+    else{
+        insertRP(tree->right_child, data);
+    }
 
-    do{
-        if (tree->data < data){
-            if (tree->left_child == NULL){
-                tree->left_child = &node;
-                break;
-            }
-            tree = tree->left_child;
-        }
-        else{
-            if (tree->right_child == NULL){
-                tree->right_child = &node;
-                break;
-            }
-            tree = tree->right_child;
-        }
-    }while(tree != NULL);
+    return tree;
 
+}
+
+int RBtree::printRBNode(RBnode* node) {
+
+    if(node == nullptr) {
+        return 0;
+    }
+ cout <<  "-1. " << endl;
+    if( node->left_child  == nullptr &&  node->right_child == nullptr )
+    {cout <<  "0. " << endl;
+        cout << node->data << " ";
+        return 0;
+    }
+
+    if (node->left_child != nullptr){
+        cout <<  "1. " << endl;
+        printRBNode( node->left_child );
+    }
+
+    if (node->right_child != nullptr){
+        cout <<  "2. " << endl;
+        printRBNode( node->right_child );
+    }
+
+    return 0;
 }
 
 int main (){
     RBtree tree;
+//    RBnode *node = tree.root;
 
-    tree.insertRP(1);
-    tree.insertRP(2);
+    tree.insertRP(tree.root, 1);
+    tree.insertRP(tree.root, 2);
+    tree.insertRP(tree.root, 3);
+
+    tree.printRBNode( tree.root );
     return 1;
 }
 
