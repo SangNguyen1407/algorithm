@@ -28,6 +28,27 @@ NODE *Btree::update_root_node(NODE *node){
 
     return root;
 }
+/*
+             1
+            / \
+            0   8
+                / \
+    delete ->  3   9        
+                \
+                5   <= deletedNode_parent
+                /
+                5  <= deletedNode
+
+            1
+           / \
+          0   8
+             / \
+            5   9        
+             \
+              5   
+             /
+            3  <= deleted
+*/
 
 NODE *Btree::removeNode(NODE *node, int data){
     if(node == NULL){
@@ -35,11 +56,11 @@ NODE *Btree::removeNode(NODE *node, int data){
     }
 
     if(node->data > data){
-        removeNode(node->left_child, data);
+        node->left_child = removeNode(node->left_child, data);
         return node;
     }
     else if(node->data < data){
-        removeNode(node->right_child, data);
+        node->right_child = removeNode(node->right_child, data);
         return node;
     }
 
@@ -59,24 +80,24 @@ NODE *Btree::removeNode(NODE *node, int data){
     }
     else{
         // node with 2 child (lelf and right)
-        NODE *find_node_parent = node;
-        NODE *find_node        = node->right_child;
+        NODE *deletedNode_parent = node;
+        NODE *deletedNode        = node->right_child;
         // the last left leaf_node 
-        while (find_node->left_child != NULL){
-            find_node_parent = find_node;
-            find_node = find_node->left_child;
+        while (deletedNode->left_child != NULL){
+            deletedNode_parent = deletedNode;
+            deletedNode = deletedNode->left_child;
         }
         //change the last left leave node to remove_node
-        if(find_node_parent != node){
-            find_node_parent->left_child = find_node->right_child;
+        if(deletedNode_parent != node){
+            deletedNode_parent->left_child = deletedNode->right_child;
         }
         else{
-            find_node_parent->right_child = find_node->right_child;
+            deletedNode_parent->right_child = deletedNode->right_child;
         }
 
-        node->data = find_node->data;
+        node->data = deletedNode->data;
 
-        delete find_node;
+        delete deletedNode;
         return node;
     }
 
@@ -185,7 +206,9 @@ int main (){
     cout << tree.search(root, 4) << endl;
 
 
+    cout << "remove 3: " << endl;
     tree.removeNode(root, 3);
+    tree.update_root_node( root );
     tree.printBtree( root );
     
     return 1;
