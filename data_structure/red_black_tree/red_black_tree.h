@@ -23,6 +23,13 @@ class RBT {
     private:
         RBNode root;
 
-    public:    
-        
+    public:
+        RBT() : data(0), left(NULL), right(NULL), parent(NULL){};
+        RBT(data) : data(data), left(NULL), right(NULL), parent(NULL){};
+        RBT* search(RBT*, int);
+        void print(RBT*);
+
+        RBT* insert(RBT*, int);
+        RBT* rotateLeft(RBT*);
+        RBT* rotateRight(RBT*);
 };
