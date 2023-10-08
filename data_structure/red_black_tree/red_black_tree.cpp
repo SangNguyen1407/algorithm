@@ -19,7 +19,7 @@ following five additional properties (invariants).
 
 using namespace std;
 
-RBT* search(RBT* root, int data){
+RBNode* search(RBNode* root, int data){
    if ( root == NULL || root->data == data ){
       return NULL;
    }
@@ -34,7 +34,7 @@ RBT* search(RBT* root, int data){
    return ( root );
 }
 
-void RBT::print(RBT* root){
+void RBT::print(RBNode* root){
     if (root == NULL){
         return;
     }
@@ -54,9 +54,9 @@ void RBT::print(RBT* root){
             / \           / \
            T4 T5         T1 T2
 */
-RBT* RBT::rotateLeft(RBT* root){
-   RBT* ri = root->right;
-   RBT* t3 = ri->left;
+RBNode* RBT::rotateLeft(RBNode* root){
+   RBNode* ri = root->right;
+   RBNode* t3 = ri->left;
 
    ri->left      = root;
    root->right   = t3;
@@ -80,9 +80,9 @@ RBT* RBT::rotateLeft(RBT* root){
  T1 T2                              T4 T5
 
 */
-RBT* RBT::rotateRight(RBT* root){
-   RBT* l  = root->left;
-   RBT* t3 = l->right;
+RBNode* RBT::rotateRight(RBNode* root){
+   RBNode* l  = root->left;
+   RBNode* t3 = l->right;
 
    l->right      = root;
    root->right   = t3;
@@ -92,8 +92,95 @@ RBT* RBT::rotateRight(RBT* root){
       t3->parent = root;
    }
 
-   return ri;
+   return l;
 
+}
+
+/*
+   Ro(B)       ->  B(3)
+                    \
+                    R(21)
+
+   B(3)       ->    B(21)
+    \              /   \
+     R(21)        R(3)  R(32)
+      \
+       R(32)
+
+     B(21)       ->      B(21)
+    /   \               /   \
+   R(3)  R(32)         B(3)  R(32)
+    \                   \
+     R(15)               R(15)
+
+
+*/
+RBNode* RBT::insert(RBNode* root, int data){
+   /* 1. Add node like binary tree
+      2. Because of parent point, and return node can not input node 
+         so return node with linked parent point to root
+      3. RBT rule 4 (one red and 2 black child ) 
+   */
+   bool red_conflict = false; 
+
+   if (root == NULL){
+      return new RBNode(data);
+   }
+   else if (root->data > data){
+      root->left         = insert(root->left, data);
+      root->left->parent = root;
+      if (root != this->root){
+         if (root->color == RED && root->left->color == RED){
+            red_conflict = true;
+         }
+      }
+   }
+   else{
+      root->right         = insert(root->right, data);
+      root->right->parent = root;
+      if (root != this->root){
+         if (root->color == RED && root->right->color == RED){
+            red_conflict = true;
+         }
+      }
+   }
+
+   // rotation
+   if ( ll ){
+      root = rotateLeft( root );
+      root->color       = BLACK;
+      root->left->color = RED;
+      ll = false;
+   }
+   else if ( rr ){
+      root = rotateRight( root );
+      root->color        = BLACK;
+      root->right->color = RED;
+      rr = false;
+   } 
+   else if ( rl ){
+      root->right = rotateRight( root->right );
+      root->right->parent = root;
+      root = rotateLeft( root );
+      root->color       = BLACK;
+      root->left->color = RED;
+      rl = false;
+   }
+   else if ( lr ){
+      root->left = rotateLeft( root->left );
+      root->left->parent = root;   
+      root = rotateRight( root );
+      root->color        = BLACK;
+      root->right->color = RED;
+      lr = false;
+   }
+
+   // 3. RBT rule 4 (one red and 2 black child ) 
+   if ( red_conflict ){
+      if ( root->parent->right == root ){
+         
+      }
+   }
 }
 
 int main(){

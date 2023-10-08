@@ -17,19 +17,26 @@ struct RBNode {
                        right(NULL), 
                        parent(NULL),  
                        color(RED) {};
+    RBNode()         : data(0), 
+                       left(NULL), 
+                       right(NULL), 
+                       parent(NULL),
+                       color(RED) {};
 };
 
 class RBT {
     private:
-        RBNode root;
+        RBNode *root;
+        bool ll; // Left-Left Rotation flag
+        bool rr; // Right-Right Rotation flag
+        bool lr; // Left-Right Rotation flag
+        bool rl; // Right-Left Rotation flag
 
     public:
-        RBT() : data(0), left(NULL), right(NULL), parent(NULL){};
-        RBT(data) : data(data), left(NULL), right(NULL), parent(NULL){};
-        RBT* search(RBT*, int);
-        void print(RBT*);
+        RBNode* search(RBNode*, int);
+        void print(RBNode*);
 
-        RBT* insert(RBT*, int);
-        RBT* rotateLeft(RBT*);
-        RBT* rotateRight(RBT*);
+        RBNode* insert( RBNode*, int );
+        RBNode* rotateLeft( RBNode* );
+        RBNode* rotateRight( RBNode* );
 };
