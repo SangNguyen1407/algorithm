@@ -19,29 +19,31 @@ following five additional properties (invariants).
 
 using namespace std;
 
-RBNode* search(RBNode* root, int data){
-   if ( root == NULL || root->data == data ){
+RBNode* search(RBNode* node, int data){
+   if ( node == NULL || node->data == data ){
       return NULL;
    }
 
-   if (root->data > data){
-      return search(root->left, data);
+   if (node->data > data){
+      return search(node->left, data);
    }
-   else if (root->data < data){
-      return search(root->right, data);
+   else if (node->data < data){
+      return search(node->right, data);
    }
 
-   return ( root );
+   return ( node );
+}
+void RBT::printTree(){
+   print(root);
 }
 
-void RBT::print(RBNode* root){
-    if (root == NULL){
+void RBT::print(RBNode* node){
+    if (node == NULL){
         return;
     }
 
-    print (root->left);
-    cout << root->data << " ";
-    print (root->right);
+    print (node->left);
+    print (node->right);
     
 }
 
@@ -54,18 +56,17 @@ void RBT::print(RBNode* root){
             / \           / \
            T4 T5         T1 T2
 */
-RBNode* RBT::rotateLeft(RBNode* root){
-   RBNode* ri = root->right;
+RBNode* RBT::rotateLeft(RBNode* node){
+   RBNode* ri = node->right;
    RBNode* t3 = ri->left;
-
-   ri->left      = root;
-   root->right   = t3;
-   root->parent  = ri;
+cout << "left" << endl;
+   ri->left      = node;
+   node->right   = t3;
+   node->parent  = ri;
 
    if (t3 != NULL){
-      t3->parent = root;
+      t3->parent = node;
    }
-
    return ri;
 
 }
@@ -80,20 +81,19 @@ RBNode* RBT::rotateLeft(RBNode* root){
  T1 T2                              T4 T5
 
 */
-RBNode* RBT::rotateRight(RBNode* root){
-   RBNode* l  = root->left;
+RBNode* RBT::rotateRight(RBNode* node){
+   RBNode* l  = node->left;cout << "l->data" << endl;
    RBNode* t3 = l->right;
-
-   l->right      = root;
-   root->right   = t3;
-   root->parent  = l;
+   cout << "right" << endl;
+   l->right      = node;
+   node->left    = t3;
+   node->parent  = l;
 
    if (t3 != NULL){
-      t3->parent = root;
+      t3->parent = node;
    }
-
+   cout << "right" << endl;
    return l;
-
 }
 
 /*
@@ -115,31 +115,30 @@ RBNode* RBT::rotateRight(RBNode* root){
 
 
 */
-RBNode* RBT::insert(RBNode* root, int data){
+RBNode* RBT::insert_node_and_rotation(RBNode* node, int data){
    /* 1. Add node like binary tree
       2. Because of parent point, and return node can not input node 
          so return node with linked parent point to root
       3. RBT rule 4 (one red and 2 black child ) 
-   */
+   */ 
    bool red_conflict = false; 
-
-   if (root == NULL){
+   if (node == NULL){
       return new RBNode(data);
    }
-   else if (root->data > data){
-      root->left         = insert(root->left, data);
-      root->left->parent = root;
-      if (root != this->root){
-         if (root->color == RED && root->left->color == RED){
+   else if (node->data > data){
+      node->left         = insert_node_and_rotation(node->left, data);
+      node->left->parent = node;
+      if (node != this->root){
+         if (node->color == RED && node->left->color == RED){
             red_conflict = true;
          }
       }
    }
    else{
-      root->right         = insert(root->right, data);
-      root->right->parent = root;
-      if (root != this->root){
-         if (root->color == RED && root->right->color == RED){
+      node->right         = insert_node_and_rotation(node->right, data);
+      node->right->parent = node;
+      if (node != this->root){
+         if (node->color == RED && node->right->color == RED){
             red_conflict = true;
          }
       }
@@ -147,42 +146,95 @@ RBNode* RBT::insert(RBNode* root, int data){
 
    // rotation
    if ( ll ){
-      root = rotateLeft( root );
-      root->color       = BLACK;
-      root->left->color = RED;
+      node = rotateLeft( node );
+      node->color       = BLACK;
+      node->left->color = RED;
       ll = false;
    }
    else if ( rr ){
-      root = rotateRight( root );
-      root->color        = BLACK;
-      root->right->color = RED;
+      node = rotateRight( node );
+      node->color        = BLACK;
+      node->right->color = RED;
       rr = false;
    } 
    else if ( rl ){
-      root->right = rotateRight( root->right );
-      root->right->parent = root;
-      root = rotateLeft( root );
-      root->color       = BLACK;
-      root->left->color = RED;
+      node->right = rotateRight( node->right );
+      node->right->parent = node;
+      node = rotateLeft( node );
+      node->color       = BLACK;
+      node->left->color = RED;
       rl = false;
-   }
+   } 
    else if ( lr ){
-      root->left = rotateLeft( root->left );
-      root->left->parent = root;   
-      root = rotateRight( root );
-      root->color        = BLACK;
-      root->right->color = RED;
+      node->left = rotateLeft( node->left );
+      node->left->parent = node;   
+      node = rotateRight( node );
+      node->color        = BLACK;
+      node->right->color = RED;
       lr = false;
    }
 
    // 3. RBT rule 4 (one red and 2 black child ) 
    if ( red_conflict ){
-      if ( root->parent->right == root ){
-         
+      if ( node->parent->right == node ){
+         if ( node->parent->left == NULL || node->parent->left->color == BLACK ){
+            if ( node->left == NULL || node->left->color == RED ){
+               rl = true;
+            }
+            else if ( node->right == NULL || node->right->color == RED ){
+               ll = true;
+            }
+         }
+         else{
+            node->parent->left->color = BLACK;
+            node->color = BLACK;
+            if (node->parent != this->root){
+               node->parent->color = RED;
+            }
+         }
       }
+      else{
+         if ( node->parent->right == NULL || node->parent->right->color == BLACK ){
+            if ( node->left == NULL || node->left->color == RED ){
+               rr = true;
+            }
+            else if ( node->right == NULL || node->right->color == RED ){
+               lr = true;
+            }
+         }
+         else{
+            node->parent->right->color = BLACK;
+            node->color = BLACK;
+            if (node->parent != this->root){
+               node->parent->color = RED;
+            }
+         }         
+      }
+
+      red_conflict = false;
+   }
+
+   return root;
+}
+
+void RBT::insert(int data){
+   if (root == NULL){
+      root = new RBNode(data);
+      root->color = BLACK;
+   }
+   else{
+      root = insert_node_and_rotation(root, data);
    }
 }
 
 int main(){
+   RBT tree;
+   int arr[] = {1,8,3,5,9,0};
+   int arr_size = sizeof(arr) / sizeof(arr[0]); 
 
+   for (int i = 0; i < arr_size; i++){
+      tree.insert(arr[i]);
+   }
+
+//   tree.printTree();
 }

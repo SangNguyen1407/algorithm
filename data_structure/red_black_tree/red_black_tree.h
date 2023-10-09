@@ -33,10 +33,13 @@ class RBT {
         bool rl; // Right-Left Rotation flag
 
     public:
+        RBT() : root(nullptr), ll(false), rr(false), lr(false), rl(false) {}
         RBNode* search(RBNode*, int);
         void print(RBNode*);
+        void printTree();
+        void insert( int );
 
-        RBNode* insert( RBNode*, int );
+        RBNode* insert_node_and_rotation( RBNode*, int );
         RBNode* rotateLeft( RBNode* );
         RBNode* rotateRight( RBNode* );
 };
