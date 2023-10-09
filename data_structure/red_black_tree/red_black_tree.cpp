@@ -41,7 +41,7 @@ void RBT::print(RBNode* node){
     if (node == NULL){
         return;
     }
-
+    cout << node->data << " " << endl;
     print (node->left);
     print (node->right);
     
@@ -59,7 +59,7 @@ void RBT::print(RBNode* node){
 RBNode* RBT::rotateLeft(RBNode* node){
    RBNode* ri = node->right;
    RBNode* t3 = ri->left;
-cout << "left" << endl;
+
    ri->left      = node;
    node->right   = t3;
    node->parent  = ri;
@@ -82,9 +82,9 @@ cout << "left" << endl;
 
 */
 RBNode* RBT::rotateRight(RBNode* node){
-   RBNode* l  = node->left;cout << "l->data" << endl;
+   RBNode* l  = node->left;
    RBNode* t3 = l->right;
-   cout << "right" << endl;
+
    l->right      = node;
    node->left    = t3;
    node->parent  = l;
@@ -92,7 +92,6 @@ RBNode* RBT::rotateRight(RBNode* node){
    if (t3 != NULL){
       t3->parent = node;
    }
-   cout << "right" << endl;
    return l;
 }
 
@@ -214,7 +213,7 @@ RBNode* RBT::insert_node_and_rotation(RBNode* node, int data){
       red_conflict = false;
    }
 
-   return root;
+   return node;
 }
 
 void RBT::insert(int data){
@@ -236,5 +235,5 @@ int main(){
       tree.insert(arr[i]);
    }
 
-//   tree.printTree();
+   tree.printTree();
 }
