@@ -1,6 +1,5 @@
 #include <iostream>
-#include <string>
-#include <vector>
+#include <cstring>
 
 using namespace std;
 
@@ -20,7 +19,7 @@ int main()
     cout << "char_test: " << char_test << endl; 
     // str_test[1] = 'E'; <- can not replace a character in char*
     // cout << "char_test: " << char_test << endl; 
-    int size = str_test.size();
+    int size = strlen(char_test);
     char *newChar = new char[size + 1];
     int position = 0;
     while( position < size+1){
